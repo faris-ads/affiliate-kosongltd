@@ -81,7 +81,7 @@ select:focus{outline:none;border-color:var(--accent)}
 .view-btn.active{background:var(--accent);color:#fff}
 
 /* Summary */
-.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 32px}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:16px 32px}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;transition:box-shadow 0.15s}
 .stat-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.06)}
 .stat-label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
@@ -309,8 +309,7 @@ tr:hover td.col-no{background:var(--surface2)}
             <option value="ditonton">Views</option>
             <option value="gpm">GPM</option>
             <option value="cpa">CPA</option>
-            <option value="roas">ROAS</option>
-            <option value="budget_ads">Budget Ads</option>
+
           </select>
           <button class="sort-dir" id="sort-dir-btn" onclick="toggleSortDir()">↓ Desc</button>
         </div>
@@ -321,7 +320,7 @@ tr:hover td.col-no{background:var(--surface2)}
       <div class="stat-card"><div class="stat-label">Total Pendapatan</div><div class="stat-value" id="stat-revenue">—</div><div class="stat-sub" id="stat-revenue-sub"></div></div>
       <div class="stat-card"><div class="stat-label">Total Penjualan</div><div class="stat-value" id="stat-sales">—</div><div class="stat-sub" id="stat-sales-sub"></div></div>
       <div class="stat-card"><div class="stat-label">Total Views</div><div class="stat-value" id="stat-views">—</div><div class="stat-sub" id="stat-views-sub"></div></div>
-      <div class="stat-card"><div class="stat-label">Avg ROAS</div><div class="stat-value" id="stat-roas">—</div><div class="stat-sub" id="stat-roas-sub"></div></div>
+
     </div>
 
     <div class="table-wrap">
@@ -457,7 +456,7 @@ function getFilteredRows() {
 }
 
 function getSortedRows() {
-  const numericKeys=['pendapatan','penjualan','ditonton','gpm','cpa','roas','budget_ads'];
+  const numericKeys=['pendapatan','penjualan','ditonton'];
   return [...getFilteredRows()].sort((a,b)=>{
     let va=a[sortKey]??0, vb=b[sortKey]??0;
     if(numericKeys.includes(sortKey)){ va=parseFloat(va)||0; vb=parseFloat(vb)||0; }
@@ -520,9 +519,6 @@ function renderTable() {
 
   document.getElementById('table-body').innerHTML=rows.map((r,idx)=>{
     const c=getBrandColor(r.brand);
-    const roas=parseFloat(r.roas)||0;
-    const roasCls=roas===0?'roas-none':roas>=3?'roas-good':roas>=2?'roas-mid':'roas-low';
-    const roasLabel=roas===0?'Organik':roas.toFixed(2)+'x';
     const desc=r.deskripsi||'';
     const isTop=topIds.has(r.id);
     const safeDesc=desc.replace(/'/g,"\'").replace(/"/g,'&quot;');
@@ -557,9 +553,6 @@ function renderCards() {
   if(!rows.length){ grid.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">${allRows.length===0?'Belum ada data.':'Tidak ada data ditemukan.'}</div></div>`; return; }
   grid.innerHTML=rows.map((r,idx)=>{
     const c=getBrandColor(r.brand);
-    const roas=parseFloat(r.roas)||0;
-    const roasLabel=roas===0?'Organik':roas.toFixed(2)+'x';
-    const roasCls=roas===0?'roas-none':roas>=3?'roas-good':roas>=2?'roas-mid':'roas-low';
     const desc=r.deskripsi||'';
     const isTop=topIds.has(r.id);
     const safeDesc=desc.replace(/'/g,"\'");

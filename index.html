@@ -342,9 +342,7 @@ tr:hover td.col-no{background:var(--surface2)}
           <select id="f-brand" class="filter-sel" onchange="brandFilter=this.value;this.className='filter-sel'+(this.value?' active':'');updateClear();render()">
             <option value="">Semua Brand</option>
           </select>
-          <select id="f-cat" class="filter-sel" onchange="catFilter=this.value;this.className='filter-sel'+(this.value?' active':'');updateClear();render()">
-            <option value="">Semua Kategori</option>
-          </select>
+
           <div class="search-wrap">
             <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
             <input type="text" id="f-search" placeholder="Cari kreator / deskripsi..." oninput="searchVal=this.value.toLowerCase();updateClear();render()">
@@ -388,7 +386,7 @@ const COLORS = [
 
 // ── STATE ────────────────────────────────────────────────
 let allRows=[], brands=[];
-let activeBrand='ALL', brandFilter='', catFilter='', searchVal='';
+let activeBrand='ALL', brandFilter='', searchVal='';
 let sortKey='pendapatan', sortDir='desc', curView='table';
 let descText='';
 
@@ -435,7 +433,7 @@ function baseRows() {
 function filteredRows() {
   let rows = baseRows();
   if(brandFilter) rows = rows.filter(r=>r.brand===brandFilter);
-  if(catFilter)   rows = rows.filter(r=>(r.nama_produk||'').toLowerCase().includes(catFilter.toLowerCase()));
+
   if(searchVal)   rows = rows.filter(r=>(r.kreator||'').toLowerCase().includes(searchVal)||(r.deskripsi||'').toLowerCase().includes(searchVal)||(r.nama_produk||'').toLowerCase().includes(searchVal));
   return rows;
 }
@@ -502,20 +500,17 @@ function updateDropdowns() {
   fb.innerHTML='<option value="">Semua Brand</option>'+brands.map(b=>`<option value="${b}">${b}</option>`).join('');
   if(brandFilter) fb.value=brandFilter;
 
-  const cats=[...new Set(baseRows().map(r=>r.nama_produk).filter(Boolean))].sort();
-  const fc=document.getElementById('f-cat');
-  fc.innerHTML='<option value="">Semua Kategori</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
-  if(catFilter) fc.value=catFilter;
+
 }
 
 function updateClear() {
-  const has=brandFilter||catFilter||searchVal;
+  const has=brandFilter||searchVal;
   document.getElementById('clear-btn').className='clear-btn'+(has?' show':'');
 }
 function clearFilters() {
   brandFilter=''; catFilter=''; searchVal='';
   document.getElementById('f-brand').value=''; document.getElementById('f-brand').className='filter-sel';
-  document.getElementById('f-cat').value='';   document.getElementById('f-cat').className='filter-sel';
+
   document.getElementById('f-search').value='';
   updateClear(); render();
 }

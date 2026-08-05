@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok Affiliate Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f3;--surface:#fff;--surface2:#f0efe9;--border:#e4e3dc;
+  --text:#1a1916;--text2:#6b6960;--text3:#9e9d96;
+  --accent:#e8441a;--accent-soft:#fdf0ec;
+  --teal:#0e9474;--teal-soft:#e6f5f1;
+  --blue:#2563eb;--blue-soft:#eff4fe;
+  --amber:#c67c0a;--amber-soft:#fef7e8;
+  --green:#2d7a22;--green-soft:#edf6eb;
+  --purple:#6f3fb5;--pink:#b5387a;--pink-soft:#fde9f3;
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+  --r:10px;--r-lg:16px;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.main{overflow-x:hidden}
+
+/* Sidebar */
+.sidebar-header{padding:24px 20px 20px;border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.logo-icon{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{width:18px;height:18px;fill:#fff}
+.logo-text{font-size:16px;font-weight:600;letter-spacing:-0.3px}
+.logo-sub{font-size:12px;color:var(--text3);margin-left:44px}
+.sidebar-section{padding:16px 12px 8px;border-bottom:1px solid var(--border)}
+.sidebar-section-title{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;padding:0 8px;margin-bottom:8px}
+.brand-btn{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--r);cursor:pointer;transition:all 0.15s;border:none;background:none;width:100%;text-align:left}
+.brand-btn:hover{background:var(--surface2)}
+.brand-btn.active{background:var(--accent-soft)}
+.brand-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;transition:transform 0.15s}
+.brand-btn.active .brand-dot{transform:scale(1.3)}
+.brand-name-label{font-size:13.5px;font-weight:500;color:var(--text);flex:1}
+.brand-btn.active .brand-name-label{color:var(--accent)}
+.brand-count{font-size:11px;color:var(--text3);background:var(--surface2);padding:2px 7px;border-radius:20px;font-family:var(--mono)}
+.all-btn .brand-dot{background:var(--text)}
+.sidebar-footer{padding:12px;margin-top:auto;border-top:1px solid var(--border)}
+.upload-area{border:1.5px dashed var(--border);border-radius:var(--r-lg);padding:14px;text-align:center;cursor:pointer;transition:all 0.2s;background:transparent}
+.upload-area:hover{border-color:var(--accent);background:var(--accent-soft)}
+.upload-area input{display:none}
+.upload-icon{font-size:20px;margin-bottom:4px}
+.upload-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px}
+.upload-sub{font-size:11px;color:var(--text3)}
+.store-count-bar{background:var(--surface2);border-radius:20px;height:4px;margin:8px 0 2px;overflow:hidden}
+.store-count-fill{background:var(--accent);height:100%;border-radius:20px;transition:width 0.3s}
+.store-limit{font-size:11px;color:var(--text3);text-align:center;margin-top:4px}
+
+/* Main header */
+.main-header{padding:28px 32px 20px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.header-left h1{font-size:22px;font-weight:600;letter-spacing:-0.5px;margin-bottom:2px}
+.header-left p{font-size:13px;color:var(--text2)}
+.header-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sort-wrap{display:flex;align-items:center;gap:8px}
+.sort-label{font-size:13px;color:var(--text2);white-space:nowrap}
+select{padding:7px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-family:var(--font);font-size:13px;color:var(--text);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b6960' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;transition:border-color 0.15s}
+select:hover{border-color:var(--text3)}
+select:focus{outline:none;border-color:var(--accent)}
+.sort-dir{padding:7px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-family:var(--font);font-size:13px;color:var(--text);cursor:pointer;transition:all 0.15s}
+.sort-dir:hover{background:var(--surface2)}
+
+/* Summary */
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:20px 32px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;transition:box-shadow 0.15s}
+.stat-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.06)}
+.stat-label{font-size:11.5px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.stat-value{font-size:22px;font-weight:600;letter-spacing:-0.5px}
+.stat-sub{font-size:12px;color:var(--text2);margin-top:2px}
+
+/* Table */
+.table-wrap{padding:0 32px 32px}
+.table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.table-title{font-size:14px;font-weight:500}
+.table-count{font-size:13px;color:var(--text3);font-family:var(--mono)}
+.filter-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.search-wrap{position:relative}
+.search-wrap input{padding:7px 12px 7px 34px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-family:var(--font);font-size:13px;color:var(--text);width:200px;transition:all 0.15s}
+.search-wrap input:focus{outline:none;border-color:var(--accent);width:240px}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3)}
+.brand-filter-select{padding:7px 28px 7px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-family:var(--font);font-size:13px;color:var(--text);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b6960' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color 0.15s;max-width:160px}
+.brand-filter-select:focus{outline:none;border-color:var(--accent)}
+.brand-filter-select.has-value{border-color:var(--accent);color:var(--accent);background-color:var(--accent-soft)}
+.clear-btn{padding:7px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-family:var(--font);font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.15s;display:none}
+.clear-btn.visible{display:block}
+.clear-btn:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+
+.table-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:900px}
+thead{position:sticky;top:0;z-index:1}
+th{padding:11px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;transition:color 0.15s}
+th:hover{color:var(--text)}
+th.sorted{color:var(--accent)}
+th .si{display:inline-block;margin-left:4px;opacity:0.5;font-size:10px}
+th.sorted .si{opacity:1}
+td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:top;font-size:13.5px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+.video-desc{max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+.creator-handle{font-family:var(--mono);font-size:12px;color:var(--text2)}
+.duration-badge{font-size:11px;font-family:var(--mono);background:var(--surface2);color:var(--text2);padding:2px 6px;border-radius:6px;white-space:nowrap}
+.revenue{font-weight:600;font-family:var(--mono);font-size:13px;white-space:nowrap}
+.metric{font-family:var(--mono);font-size:13px;color:var(--text2)}
+.metric.hi{color:var(--teal);font-weight:500}
+.brand-tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.roas-pill{font-size:11.5px;font-family:var(--mono);padding:2px 8px;border-radius:20px;font-weight:500;white-space:nowrap}
+.roas-good{background:var(--green-soft);color:var(--green)}
+.roas-mid{background:var(--amber-soft);color:var(--amber)}
+.roas-low{background:var(--accent-soft);color:var(--accent)}
+.roas-none{background:var(--surface2);color:var(--text3)}
+.link-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--blue);text-decoration:none;padding:4px 8px;border-radius:6px;border:1px solid var(--blue-soft);transition:all 0.15s;white-space:nowrap}
+.link-btn:hover{background:var(--blue-soft)}
+.link-btn svg{width:10px;height:10px}
+.remove-btn{background:none;border:none;cursor:pointer;padding:4px;border-radius:6px;color:var(--text3);transition:all 0.15s;display:flex;align-items:center}
+.remove-btn:hover{background:var(--accent-soft);color:var(--accent)}
+
+/* Loading state */
+.loading-overlay{display:none;position:fixed;inset:0;background:rgba(247,246,243,0.85);z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.loading-overlay.show{display:flex}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:14px;color:var(--text2)}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:10px 16px;border-radius:var(--r);font-size:13px;opacity:0;transform:translateY(10px);transition:all 0.3s;pointer-events:none;z-index:999;max-width:320px}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{background:var(--green)}
+.toast.error{background:#c83232}
+
+/* Delete confirm modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:300;align-items:center;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{background:var(--surface);border-radius:var(--r-lg);padding:28px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+.modal h3{font-size:17px;font-weight:600;margin-bottom:8px}
+.modal p{font-size:13.5px;color:var(--text2);margin-bottom:20px;line-height:1.6}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end}
+.btn{padding:8px 16px;border-radius:var(--r);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all 0.15s}
+.btn-ghost{background:var(--surface2);color:var(--text)}
+.btn-ghost:hover{background:var(--border)}
+.btn-danger{background:var(--accent);color:#fff}
+.btn-danger:hover{background:#d43a14}
+
+/* Upload progress */
+.upload-progress{margin-top:8px;display:none}
+.upload-progress.show{display:block}
+.progress-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.3s;width:0%}
+.progress-text{font-size:11px;color:var(--text3);text-align:center}
+
+/* Empty state */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text3)}
+.empty-icon{font-size:40px;margin-bottom:12px;opacity:0.4}
+.empty-text{font-size:14px}
+
+@media(max-width:900px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:0;top:0;height:100vh;z-index:100;transform:translateX(-100%);transition:transform 0.3s;width:260px}
+  .sidebar.open{transform:translateX(0)}
+  .summary-grid{grid-template-columns:repeat(2,1fr)}
+  .main-header,.table-wrap,.summary-grid{padding-left:16px;padding-right:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">Memuat data...</div>
+</div>
+
+<!-- Delete confirm modal -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3>Hapus toko ini?</h3>
+    <p id="modal-msg">Semua data video toko ini akan dihapus permanen dari database.</p>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Batal</button>
+      <button class="btn btn-danger" id="modal-confirm-btn">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.3 6.3 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V9.11a8.16 8.16 0 0 0 4.77 1.52V7.18a4.85 4.85 0 0 1-1-.49z"/></svg>
+        </div>
+        <span class="logo-text">Affiliate Tracker</span>
+      </div>
+      <div class="logo-sub">TikTok Shop Analytics</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Toko / Brand</div>
+      <div id="brand-list"></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <label class="upload-area">
+        <input type="file" id="file-input" accept=".xlsx" multiple>
+        <div class="upload-icon">+</div>
+        <div class="upload-title">Upload Toko Baru</div>
+        <div class="upload-sub">File .xlsx dari Kalodata</div>
+      </label>
+      <div class="upload-progress" id="upload-progress">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-text" id="progress-text">Mengupload...</div>
+      </div>
+      <div class="store-count-bar"><div class="store-count-fill" id="store-fill" style="width:0%"></div></div>
+      <div class="store-limit" id="store-limit-text">0 dari 10 toko</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="main-header">
+      <div class="header-left">
+        <h1 id="page-title">Semua Toko</h1>
+        <p id="page-sub">Data Affiliate TikTok Shop · tersimpan di Supabase</p>
+      </div>
+      <div class="header-right">
+        <div class="sort-wrap">
+          <span class="sort-label">Urutkan:</span>
+          <select id="sort-select" onchange="onSortChange(this.value)">
+            <option value="pendapatan">Pendapatan</option>
+            <option value="penjualan">Penjualan</option>
+            <option value="ditonton">Views</option>
+            <option value="gpm">GPM</option>
+            <option value="cpa">CPA</option>
+            <option value="roas">ROAS</option>
+            <option value="budget_ads">Budget Ads</option>
+          </select>
+          <button class="sort-dir" id="sort-dir-btn" onclick="toggleSortDir()">↓ Desc</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="stat-card"><div class="stat-label">Total Pendapatan</div><div class="stat-value" id="stat-revenue">—</div><div class="stat-sub" id="stat-revenue-sub"></div></div>
+      <div class="stat-card"><div class="stat-label">Total Penjualan</div><div class="stat-value" id="stat-sales">—</div><div class="stat-sub" id="stat-sales-sub"></div></div>
+      <div class="stat-card"><div class="stat-label">Total Views</div><div class="stat-value" id="stat-views">—</div><div class="stat-sub" id="stat-views-sub"></div></div>
+      <div class="stat-card"><div class="stat-label">Avg ROAS</div><div class="stat-value" id="stat-roas">—</div><div class="stat-sub" id="stat-roas-sub"></div></div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-header">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="table-title">Daftar Konten Video</span>
+          <span class="table-count" id="row-count"></span>
+        </div>
+        <div class="filter-bar">
+          <select id="brand-filter-select" class="brand-filter-select" onchange="onBrandFilterChange()">
+            <option value="">Semua Brand</option>
+          </select>
+          <div class="search-wrap">
+            <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="search-input" placeholder="Cari kreator / deskripsi..." oninput="onSearchChange()">
+          </div>
+          <button class="clear-btn" id="clear-btn" onclick="clearFilters()">✕ Reset</button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead><tr id="table-head"></tr></thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ============================================================
+// SUPABASE CONFIG — ganti jika perlu
+// ============================================================
+const SUPABASE_URL = 'https://ohgibolhrdtbtljvyvul.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_u8dihagLL4sX_wlqX4SQZQ_FePZI2zi';
+const MAX_STORES = 10;
+
+// ============================================================
+// SUPABASE HELPER
+// ============================================================
+async function sbFetch(path, options={}) {
+  const res = await fetch(SUPABASE_URL + path, {
+    ...options,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': options.prefer || '',
+      ...options.headers
+    }
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw new Error(err.message || err.hint || `HTTP ${res.status}`);
+  }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+// ============================================================
+// STATE
+// ============================================================
+const BRAND_COLORS = [
+  {bg:'#fdf0ec',text:'#c8350e',dot:'#e8441a'},
+  {bg:'#e6f5f1',text:'#0a6e54',dot:'#0e9474'},
+  {bg:'#eff4fe',text:'#1a4dbb',dot:'#2563eb'},
+  {bg:'#f3eeff',text:'#5c31a0',dot:'#6f3fb5'},
+  {bg:'#fde9f3',text:'#922d60',dot:'#b5387a'},
+  {bg:'#edf6eb',text:'#2a6b20',dot:'#2d7a22'},
+  {bg:'#fef7e8',text:'#9a6008',dot:'#c67c0a'},
+  {bg:'#fceaea',text:'#9e2020',dot:'#c83232'},
+  {bg:'#e8f0fe',text:'#1a56c4',dot:'#2870e8'},
+  {bg:'#f0fbf4',text:'#1a6e42',dot:'#22915a'},
+];
+
+let allRows = [];       // all rows from DB
+let brands = [];        // unique brand names
+let activeBrand = 'ALL';
+let brandFilter = '';
+let searchVal = '';
+let sortKey = 'pendapatan';
+let sortDir = 'desc';
+let pendingDeleteBrand = null;
+
+// ============================================================
+// INIT
+// ============================================================
+async function init() {
+  showLoading('Memuat data dari Supabase...');
+  try {
+    await loadAllData();
+  } catch(e) {
+    showToast('Gagal memuat data: ' + e.message, 'error');
+  }
+  hideLoading();
+}
+
+async function loadAllData() {
+  const data = await sbFetch('/rest/v1/videos?select=*&order=pendapatan.desc&limit=5000');
+  allRows = data || [];
+  brands = [...new Set(allRows.map(r=>r.brand).filter(Boolean))].sort();
+  renderSidebar();
+  renderSummary();
+  renderTable();
+  updateBrandFilterDropdown();
+}
+
+// ============================================================
+// BRAND COLORS
+// ============================================================
+function getBrandColor(brand) {
+  const idx = brands.indexOf(brand);
+  return BRAND_COLORS[idx >= 0 ? idx % BRAND_COLORS.length : 0];
+}
+
+// ============================================================
+// SIDEBAR
+// ============================================================
+function renderSidebar() {
+  const totalVideos = allRows.length;
+  let html = `<button class="brand-btn all-btn ${activeBrand==='ALL'?'active':''}" onclick="selectBrand('ALL')">
+    <span class="brand-dot" style="background:${activeBrand==='ALL'?'#e8441a':'#9e9d96'}"></span>
+    <span class="brand-name-label">Semua Toko</span>
+    <span class="brand-count">${totalVideos}</span>
+  </button>`;
+
+  brands.forEach(b => {
+    const c = getBrandColor(b);
+    const count = allRows.filter(r=>r.brand===b).length;
+    const isActive = activeBrand === b;
+    const safeB = encodeURIComponent(b);
+    html += `<div style="display:flex;align-items:center">
+      <button class="brand-btn ${isActive?'active':''}" data-brand="${safeB}" onclick="selectBrandFromAttr(this)" style="flex:1${isActive?`;background:${c.bg}`:''}">
+        <span class="brand-dot" style="background:${c.dot}"></span>
+        <span class="brand-name-label" style="${isActive?`color:${c.text}`:''}"> ${b}</span>
+        <span class="brand-count">${count}</span>
+      </button>
+      <button class="remove-btn" data-brand="${safeB}" onclick="confirmDeleteFromAttr(this)" title="Hapus toko">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`;
+  });
+
+  document.getElementById('brand-list').innerHTML = html;
+  const pct = Math.min(100, (brands.length / MAX_STORES * 100)).toFixed(0);
+  document.getElementById('store-fill').style.width = pct + '%';
+  document.getElementById('store-limit-text').textContent = `${brands.length} dari ${MAX_STORES} toko`;
+}
+
+function selectBrandFromAttr(el) {
+  selectBrand(decodeURIComponent(el.dataset.brand));
+}
+
+function confirmDeleteFromAttr(el) {
+  confirmDelete(decodeURIComponent(el.dataset.brand));
+}
+
+function selectBrand(brand) {
+  activeBrand = brand;
+  brandFilter = '';
+  document.getElementById('brand-filter-select').value = '';
+  document.getElementById('brand-filter-select').className = 'brand-filter-select';
+  renderSidebar();
+  renderSummary();
+  renderTable();
+  updateClearBtn();
+}
+
+// ============================================================
+// SUMMARY
+// ============================================================
+function getFilteredRows() {
+  let rows = activeBrand === 'ALL' ? allRows : allRows.filter(r=>r.brand===activeBrand);
+  if (brandFilter) rows = rows.filter(r=>r.brand===brandFilter);
+  if (searchVal) rows = rows.filter(r=>
+    (r.kreator||'').toLowerCase().includes(searchVal) ||
+    (r.deskripsi||'').toLowerCase().includes(searchVal) ||
+    (r.nama_produk||'').toLowerCase().includes(searchVal)
+  );
+  return rows;
+}
+
+function renderSummary() {
+  const rows = activeBrand === 'ALL' ? allRows : allRows.filter(r=>r.brand===activeBrand);
+  const rev = rows.reduce((a,r)=>a+(parseFloat(r.pendapatan)||0),0);
+  const sales = rows.reduce((a,r)=>a+(parseInt(r.penjualan)||0),0);
+  const views = rows.reduce((a,r)=>a+(parseInt(r.ditonton)||0),0);
+  const roasRows = rows.filter(r=>parseFloat(r.roas)>0);
+  const avgRoas = roasRows.length ? roasRows.reduce((a,r)=>a+(parseFloat(r.roas)||0),0)/roasRows.length : 0;
+  document.getElementById('stat-revenue').textContent = fmtRp(rev);
+  document.getElementById('stat-revenue-sub').textContent = `dari ${rows.length} video`;
+  document.getElementById('stat-sales').textContent = fmtNum(sales);
+  document.getElementById('stat-sales-sub').textContent = 'unit terjual';
+  document.getElementById('stat-views').textContent = fmtNum(views);
+  document.getElementById('stat-views-sub').textContent = 'total views';
+  document.getElementById('stat-roas').textContent = avgRoas ? avgRoas.toFixed(2)+'x' : '—';
+  document.getElementById('stat-roas-sub').textContent = roasRows.length + ' video beriklan';
+}
+
+// ============================================================
+// TABLE
+// ============================================================
+const COLS = [
+  {key:'brand',label:'Toko'},
+  {key:'deskripsi',label:'Deskripsi'},
+  {key:'kreator',label:'Kreator'},
+  {key:'durasi',label:'Durasi'},
+  {key:'pendapatan',label:'Pendapatan',num:true},
+  {key:'penjualan',label:'Penjualan',num:true},
+  {key:'ditonton',label:'Views',num:true},
+  {key:'gpm',label:'GPM',num:true},
+  {key:'cpa',label:'CPA',num:true},
+  {key:'roas',label:'ROAS',num:true},
+  {key:'rasio_ads',label:'Rasio Ads'},
+  {key:'_link',label:'Link'},
+];
+
+function renderTable() {
+  // Head
+  document.getElementById('table-head').innerHTML = COLS.map(c => {
+    const sortable = c.num || ['kreator','durasi','brand'].includes(c.key);
+    const sorted = c.key === sortKey;
+    return `<th class="${sorted?'sorted':''}" ${sortable?`onclick="sortBy('${c.key}')"`:''}>${c.label}${sortable?`<span class="si">${sorted?(sortDir==='desc'?'↓':'↑'):'↕'}</span>`:''}</th>`;
+  }).join('');
+
+  // Rows
+  let rows = getFilteredRows();
+  const numericKeys = ['pendapatan','penjualan','ditonton','gpm','cpa','roas','budget_ads'];
+  rows = [...rows].sort((a,b) => {
+    let va = a[sortKey] ?? 0, vb = b[sortKey] ?? 0;
+    if (numericKeys.includes(sortKey)) {
+      va = parseFloat(va) || 0;
+      vb = parseFloat(vb) || 0;
+    } else if (typeof va === 'string') {
+      va = va.toLowerCase(); vb = String(vb).toLowerCase();
+    }
+    return sortDir === 'desc' ? (va > vb ? -1 : va < vb ? 1 : 0) : (va < vb ? -1 : va > vb ? 1 : 0);
+  });
+
+  document.getElementById('row-count').textContent = rows.length + ' video';
+
+  if (!rows.length) {
+    document.getElementById('table-body').innerHTML = `<tr><td colspan="${COLS.length}"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">${allRows.length===0?'Belum ada data. Upload file .xlsx untuk mulai.':'Tidak ada data ditemukan.'}</div></div></td></tr>`;
+    return;
+  }
+
+  document.getElementById('table-body').innerHTML = rows.map(r => {
+    const c = getBrandColor(r.brand);
+    const roas = parseFloat(r.roas) || 0;
+    const roasCls = roas===0?'roas-none':roas>=3?'roas-good':roas>=2?'roas-mid':'roas-low';
+    const roasLabel = roas===0?'Organik':roas.toFixed(2)+'x';
+    const desc = r.deskripsi || '';
+    return `<tr>
+      <td><span class="brand-tag" style="background:${c.bg};color:${c.text}">${r.brand}</span></td>
+      <td><div class="video-desc" title="${desc.replace(/"/g,'&quot;')}">${desc||'<span style="color:var(--text3)">—</span>'}</div></td>
+      <td><span class="creator-handle">@${r.kreator||'—'}</span></td>
+      <td><span class="duration-badge">${r.durasi||'—'}</span></td>
+      <td><span class="revenue">${fmtRp(r.pendapatan)}</span></td>
+      <td><span class="metric hi">${(r.penjualan||0).toLocaleString()}</span></td>
+      <td><span class="metric">${fmtNum(r.ditonton||0)}</span></td>
+      <td><span class="metric">${fmtRp(r.gpm)}</span></td>
+      <td><span class="metric">${r.cpa>0?fmtRp(r.cpa):'-'}</span></td>
+      <td><span class="roas-pill ${roasCls}">${roasLabel}</span></td>
+      <td><span class="metric">${r.rasio_ads||'—'}</span></td>
+      <td>${r.link_tiktok?`<a href="${r.link_tiktok}" target="_blank" class="link-btn">TikTok<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>`:''}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// FILTERS & SORT
+// ============================================================
+function updateBrandFilterDropdown() {
+  const sel = document.getElementById('brand-filter-select');
+  sel.innerHTML = '<option value="">Semua Brand</option>' + brands.map(b => `<option value="${b}">${b}</option>`).join('');
+  if (brandFilter && brands.includes(brandFilter)) sel.value = brandFilter;
+}
+
+function onBrandFilterChange() {
+  const sel = document.getElementById('brand-filter-select');
+  brandFilter = sel.value;
+  sel.className = 'brand-filter-select' + (brandFilter ? ' has-value' : '');
+  updateClearBtn();
+  renderSummary();
+  renderTable();
+}
+
+function onSearchChange() {
+  searchVal = document.getElementById('search-input').value.toLowerCase();
+  updateClearBtn();
+  renderTable();
+}
+
+function clearFilters() {
+  brandFilter = ''; searchVal = '';
+  document.getElementById('brand-filter-select').value = '';
+  document.getElementById('brand-filter-select').className = 'brand-filter-select';
+  document.getElementById('search-input').value = '';
+  updateClearBtn();
+  renderTable();
+}
+
+function updateClearBtn() {
+  const has = brandFilter || searchVal;
+  document.getElementById('clear-btn').className = 'clear-btn' + (has ? ' visible' : '');
+}
+
+function sortBy(key) {
+  if (sortKey === key) sortDir = sortDir==='desc'?'asc':'desc';
+  else { sortKey = key; sortDir = 'desc'; }
+  document.getElementById('sort-select').value = key;
+  document.getElementById('sort-dir-btn').textContent = sortDir==='desc'?'↓ Desc':'↑ Asc';
+  renderTable();
+}
+
+function onSortChange(val) { sortBy(val); }
+
+function toggleSortDir() {
+  sortDir = sortDir==='desc'?'asc':'desc';
+  document.getElementById('sort-dir-btn').textContent = sortDir==='desc'?'↓ Desc':'↑ Asc';
+  renderTable();
+}
+
+// ============================================================
+// UPLOAD
+// ============================================================
+document.getElementById('file-input').addEventListener('change', async e => {
+  const files = [...e.target.files];
+  e.target.value = '';
+  if (!files.length) return;
+  if (brands.length >= MAX_STORES) { showToast(`Maksimal ${MAX_STORES} toko. Hapus dulu salah satu.`, 'error'); return; }
+
+  showProgress(0, `Memproses ${files.length} file...`);
+  let done = 0;
+
+  for (const file of files) {
+    try {
+      showProgress(Math.round(done/files.length*100), `Mengupload ${file.name}...`);
+      const brandName = guessBrandName(file.name);
+      const rows = await readXlsx(file);
+      const records = rows.map(r => ({
+        brand: brandName,
+        deskripsi: r['Deskripsi Video'] || '',
+        kreator: r['Handle Kreator'] || '',
+        durasi: r['Durasi'] || '',
+        pendapatan: parseFloat(r['Pendapatan(Rp)']) || 0,
+        penjualan: parseInt(r['Penjualan']) || 0,
+        ditonton: parseInt(r['Ditonton']) || 0,
+        gpm: parseFloat(r['GPM(Rp)']) || 0,
+        cpa: parseFloat(r['CPA(Rp)']) || 0,
+        roas: parseFloat(r['ROAS Ads']) || 0,
+        rasio_ads: String(r['Rasio Views Ads'] || ''),
+        budget_ads: parseFloat(r['Konsumsi Ads(Rp)']) || 0,
+        link_tiktok: r['Link TikTok'] || '',
+        nama_produk: r['Nama Produk'] || '',
+        tanggal_publikasi: String(r['Tanggal Publikasi'] || ''),
+      }));
+
+      // Delete old data for this brand first, then insert new
+      await sbFetch(`/rest/v1/videos?brand=eq.${encodeURIComponent(brandName)}`, { method:'DELETE', prefer:'return=minimal' });
+      // Insert in batches of 200
+      for (let i=0; i<records.length; i+=200) {
+        await sbFetch('/rest/v1/videos', {
+          method: 'POST',
+          prefer: 'return=minimal',
+          body: JSON.stringify(records.slice(i, i+200))
+        });
+      }
+      showToast(`✓ ${brandName} berhasil diupload (${records.length} video)`, 'success');
+    } catch(err) {
+      showToast(`Gagal upload ${file.name}: ${err.message}`, 'error');
+    }
+    done++;
+  }
+
+  hideProgress();
+  showLoading('Menyegarkan data...');
+  await loadAllData();
+  hideLoading();
+});
+
+function guessBrandName(filename) {
+  let name = filename.replace(/\.xlsx$/i, '');
+  name = name.replace(/^\d+__\d+__/, '');
+  name = name.replace(/___L\d+D___.*$/, '').replace(/__L\d+D__.*$/, '');
+  return name.replace(/_/g,' ').trim() || filename.replace(/\.xlsx$/i,'');
+}
+
+function readXlsx(file) {
+  return new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const wb = XLSX.read(ev.target.result, {type:'array'});
+        const sh = wb.SheetNames.includes('LIST_VIDEO') ? 'LIST_VIDEO' : wb.SheetNames[0];
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[sh], {defval:''});
+        if (!rows.length) throw new Error('Sheet kosong');
+        res(rows);
+      } catch(e) { rej(e); }
+    };
+    reader.onerror = () => rej(new Error('Gagal baca file'));
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+// ============================================================
+// DELETE BRAND
+// ============================================================
+function confirmDelete(brand) {
+  pendingDeleteBrand = brand;
+  document.getElementById('modal-msg').textContent = `Semua data video toko "${brand}" akan dihapus permanen dari database.`;
+  document.getElementById('modal-bg').classList.add('show');
+  document.getElementById('modal-confirm-btn').onclick = async () => {
+    closeModal();
+    showLoading(`Menghapus toko "${brand}"...`);
+    try {
+      await sbFetch(`/rest/v1/videos?brand=eq.${encodeURIComponent(brand)}`, { method:'DELETE', prefer:'return=minimal' });
+      if (activeBrand === brand) activeBrand = 'ALL';
+      await loadAllData();
+      showToast(`Toko "${brand}" berhasil dihapus`, 'success');
+    } catch(e) {
+      showToast('Gagal hapus: ' + e.message, 'error');
+    }
+    hideLoading();
+  };
+}
+
+function closeModal() {
+  document.getElementById('modal-bg').classList.remove('show');
+  pendingDeleteBrand = null;
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function fmtRp(n) {
+  n = parseFloat(n) || 0;
+  if (!n || n===0) return '—';
+  if (n>=1e9) return 'Rp '+(n/1e9).toFixed(1)+'M';
+  if (n>=1e6) return 'Rp '+(n/1e6).toFixed(1)+'jt';
+  if (n>=1e3) return 'Rp '+(n/1e3).toFixed(0)+'rb';
+  return 'Rp '+n.toFixed(0);
+}
+function fmtNum(n) {
+  n = parseFloat(n) || 0;
+  if (n>=1e6) return (n/1e6).toFixed(1)+'M';
+  if (n>=1e3) return (n/1e3).toFixed(0)+'K';
+  return String(Math.round(n));
+}
+function showLoading(txt='Memuat...') {
+  document.getElementById('loading-text').textContent = txt;
+  document.getElementById('loading-overlay').classList.add('show');
+}
+function hideLoading() { document.getElementById('loading-overlay').classList.remove('show'); }
+function showProgress(pct, txt) {
+  const el = document.getElementById('upload-progress');
+  el.classList.add('show');
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = txt;
+}
+function hideProgress() { document.getElementById('upload-progress').classList.remove('show'); }
+
+let toastTimer;
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' '+type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ t.className='toast'; }, 3500);
+}
+
+// Close modal on bg click
+document.getElementById('modal-bg').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
+
+// ============================================================
+// START
+// ============================================================
+init();
+</script>
+</body>
+</html>

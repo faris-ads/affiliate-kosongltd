@@ -98,10 +98,8 @@ table{width:100%;border-collapse:separate;border-spacing:0;min-width:900px}
 thead{position:sticky;top:0;z-index:10}
 th{padding:11px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;transition:color 0.15s;box-shadow:0 1px 0 var(--border)}
 th.col-no{position:sticky;left:0;z-index:20;background:var(--surface2);border-right:1px solid var(--border);min-width:48px;text-align:center}
-th.col-brand{position:sticky;left:48px;z-index:20;background:var(--surface2);border-right:1px solid var(--border);min-width:130px}
 td.col-no{position:sticky;left:0;z-index:5;background:var(--surface);border-right:1px solid var(--border);text-align:center;font-family:var(--mono);font-size:12px;color:var(--text3);font-weight:500}
-td.col-brand{position:sticky;left:48px;z-index:5;background:var(--surface);border-right:1px solid var(--border)}
-tr:hover td.col-no,tr:hover td.col-brand{background:var(--surface2)}
+tr:hover td.col-no{background:var(--surface2)}
 th:hover{color:var(--text)}
 th.sorted{color:var(--accent)}
 th .si{display:inline-block;margin-left:4px;opacity:0.5;font-size:10px}
@@ -484,7 +482,7 @@ function renderTable() {
     const sortable = c.num || ['kreator','durasi','brand'].includes(c.key);
     const sorted = c.key === sortKey;
     if (c.key === '_no') return `<th class="col-no">#</th>`;
-    if (c.key === 'brand') return `<th class="col-brand ${sorted?'sorted':''}" onclick="sortBy('brand')">Toko<span class="si">${sorted?(sortDir==='desc'?'↓':'↑'):'↕'}</span></th>`;
+    if (c.key === 'brand') return `<th class="${sorted?'sorted':''}" onclick="sortBy('brand')">Toko<span class="si">${sorted?(sortDir==='desc'?'↓':'↑'):'↕'}</span></th>`;
     return `<th class="${sorted?'sorted':''}" ${sortable?`onclick="sortBy('${c.key}')"`:''}>${c.label}${sortable?`<span class="si">${sorted?(sortDir==='desc'?'↓':'↑'):'↕'}</span>`:''}</th>`;
   }).join('');
 
@@ -517,7 +515,7 @@ function renderTable() {
     const desc = r.deskripsi || '';
     return `<tr>
       <td class="col-no">${idx+1}</td>
-      <td class="col-brand"><span class="brand-tag" style="background:${c.bg};color:${c.text}">${r.brand}</span></td>
+      <td><span class="brand-tag" style="background:${c.bg};color:${c.text}">${r.brand}</span></td>
       <td><div class="video-desc" title="${desc.replace(/"/g,'&quot;')}">${desc||'<span style="color:var(--text3)">—</span>'}</div></td>
       <td><span class="creator-handle">@${r.kreator||'—'}</span></td>
       <td><span class="duration-badge">${r.durasi||'—'}</span></td>

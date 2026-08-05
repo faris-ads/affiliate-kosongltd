@@ -572,7 +572,7 @@ function renderTable() {
     const c=color(r.brand);
     const desc=r.deskripsi||'';
     const isTop=tops.has(r.id);
-    const esc=desc.replace(/\/g,'\\').replace(/'/g,"\'");
+    const esc=desc.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     return `<tr>
       <td class="col-no">${i+1}${isTop?'<br><span class="top-badge">🔥 Top</span>':''}</td>
       <td><span class="brand-tag" style="background:${c.bg};color:${c.text}">${r.brand}</span></td>
@@ -603,7 +603,7 @@ function renderCards() {
     const c=color(r.brand);
     const desc=r.deskripsi||'';
     const isTop=tops.has(r.id);
-    const esc=desc.replace(/\/g,'\\').replace(/'/g,"\'");
+    const esc=desc.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     return `<div class="card">
       <div class="card-bar" style="background:${c.dot}"></div>
       <div class="card-top">

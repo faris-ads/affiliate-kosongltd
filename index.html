@@ -458,6 +458,7 @@ function renderSummary() {
 // TABLE
 // ============================================================
 const COLS = [
+  {key:'_no',label:'No'},
   {key:'brand',label:'Toko'},
   {key:'deskripsi',label:'Deskripsi'},
   {key:'kreator',label:'Kreator'},
@@ -477,6 +478,7 @@ function renderTable() {
   document.getElementById('table-head').innerHTML = COLS.map(c => {
     const sortable = c.num || ['kreator','durasi','brand'].includes(c.key);
     const sorted = c.key === sortKey;
+    if (c.key === '_no') return `<th style="width:48px;text-align:center">#</th>`;
     return `<th class="${sorted?'sorted':''}" ${sortable?`onclick="sortBy('${c.key}')"`:''}>${c.label}${sortable?`<span class="si">${sorted?(sortDir==='desc'?'↓':'↑'):'↕'}</span>`:''}</th>`;
   }).join('');
 
@@ -501,13 +503,14 @@ function renderTable() {
     return;
   }
 
-  document.getElementById('table-body').innerHTML = rows.map(r => {
+  document.getElementById('table-body').innerHTML = rows.map((r, idx) => {
     const c = getBrandColor(r.brand);
     const roas = parseFloat(r.roas) || 0;
     const roasCls = roas===0?'roas-none':roas>=3?'roas-good':roas>=2?'roas-mid':'roas-low';
     const roasLabel = roas===0?'Organik':roas.toFixed(2)+'x';
     const desc = r.deskripsi || '';
     return `<tr>
+      <td style="text-align:center;font-family:var(--mono);font-size:12px;color:var(--text3);font-weight:500">${idx+1}</td>
       <td><span class="brand-tag" style="background:${c.bg};color:${c.text}">${r.brand}</span></td>
       <td><div class="video-desc" title="${desc.replace(/"/g,'&quot;')}">${desc||'<span style="color:var(--text3)">—</span>'}</div></td>
       <td><span class="creator-handle">@${r.kreator||'—'}</span></td>
